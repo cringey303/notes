@@ -1,2 +1,2 @@
 # checklist
-in Rush
+in Rust
