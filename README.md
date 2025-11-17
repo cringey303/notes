@@ -1,2 +1,2 @@
 # checklist
-in Rusht
+in Rush
