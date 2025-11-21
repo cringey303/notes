@@ -1,2 +1,2 @@
 # checklist
-in Rust
+A simple to-do list to help me learn Rust.
