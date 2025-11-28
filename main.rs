@@ -11,3 +11,9 @@ loop {
 
     }
 }
+
+struct Note {
+    id: u32,
+    body: String,
+    timestamp: String,
+}
