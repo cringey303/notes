@@ -4,8 +4,7 @@ use chrono::Local;
 
 /*TODO:
 -color
--remove
--
+-remove_note(): valid input loop
 */
 fn print_banner() {
     println!("
