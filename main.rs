@@ -51,6 +51,7 @@ fn add_note(notes: &mut Vec<Note>) -> io::Result<()> {
     Ok(())
 }
 
+//TODO: loop to keep taking integer until it is < len notes
 fn remove_note(notes: &mut Vec<Note>) -> io::Result<()> {
     println!("Enter note ID: ");
     let mut input = String::new();
@@ -109,7 +110,7 @@ fn main() -> io::Result<()> {
             println!(">Quitting...");
             break; //quit
         } else {
-            println!("Invalid choice.");
+            println!("Error: Invalid choice");
             println!();
         }
     }
