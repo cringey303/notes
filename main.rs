@@ -82,7 +82,6 @@ fn remove_note(notes: &mut Vec<Note>) -> io::Result<()> {
         println!(">Removed Note {}", id);
 
         //update indices
-        let mut i: u32 = 1;
         for (i, note) in notes.iter_mut().enumerate() {
             note.id = (i+1) as u32;
         }
