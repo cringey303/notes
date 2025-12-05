@@ -1,5 +1,6 @@
 use serde::{Serialize, Deserialize};
 use std::io;
+use std::fs;
 use chrono::Local;
 
 /*TODO:
@@ -8,12 +9,12 @@ use chrono::Local;
 */
 fn print_banner() {
     println!("
-        ███╗   ██╗ ██████╗ ████████╗███████╗███████╗
-        ████╗  ██║██╔═══██╗╚══██╔══╝██╔════╝██╔════╝
-        ██╔██╗ ██║██║   ██║   ██║   █████╗  ███████╗
-        ██║╚██╗██║██║   ██║   ██║   ██╔══╝  ╚════██║
-        ██║ ╚████║╚██████╔╝   ██║   ███████╗███████║
-        ╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝");
+███╗   ██╗ ██████╗ ████████╗███████╗███████╗
+████╗  ██║██╔═══██╗╚══██╔══╝██╔════╝██╔════╝
+██╔██╗ ██║██║   ██║   ██║   █████╗  ███████╗
+██║╚██╗██║██║   ██║   ██║   ██╔══╝  ╚════██║
+██║ ╚████║╚██████╔╝   ██║   ███████╗███████║
+╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝");
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -90,9 +91,23 @@ fn remove_note(notes: &mut Vec<Note>) -> io::Result<()> {
     Ok(())
 }
 
+fn save_notes(notes: &Vec<Note>) {
+    if let Ok(json) = serde_json::to_string_pretty(notes) {
+        let _ = fs::write("notes.json", json);
+    }
+}
+
+fn load_notes() -> Vec<Note> {
+    if let Ok(data) = fs::read_to_string("notes.json") {
+        serde_json::from_str(&data).unwrap_or_default()
+    } else {
+        Vec::new()
+    }
+}
+
 fn main() -> io::Result<()> {
     print_banner();
-    let mut notes: Vec<Note> = Vec::new();
+    let mut notes: Vec<Note> = load_notes();
 
     loop {
         print_menu();
@@ -105,6 +120,8 @@ fn main() -> io::Result<()> {
         if clean_input == 1 {
             if let Err(e) = add_note(&mut notes) {
                 eprint!("Error adding note: {}", e);
+            } else {
+                save_notes(&notes);
             }
             println!();
 
@@ -112,6 +129,8 @@ fn main() -> io::Result<()> {
         } else if clean_input == 2 {
             if let Err(e) = remove_note(&mut notes) {
                 eprint!("Error removing note: {}", e);
+            } else {
+                save_notes(&notes);
             }
             println!();
 
@@ -134,5 +153,3 @@ fn main() -> io::Result<()> {
     }
     Ok(())
 }
-
-
