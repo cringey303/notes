@@ -4,6 +4,7 @@ use std::fs;
 use chrono::Local;
 use colored::*;
 use inquire::Select;
+use clap::{Parser, Subcommand};
 
 fn print_banner() {
     println!("{}", "
@@ -12,7 +13,8 @@ fn print_banner() {
 ██╔██╗ ██║██║   ██║   ██║   █████╗  ███████╗
 ██║╚██╗██║██║   ██║   ██║   ██╔══╝  ╚════██║
 ██║ ╚████║╚██████╔╝   ██║   ███████╗███████║
-╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝".truecolor(14, 184, 219).bold());
+╚═╝  ╚═══╝ ╚═════╝    ╚═╝   ╚══════╝╚══════╝"
+.truecolor(14, 184, 219).bold());
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -20,6 +22,31 @@ struct Note {
     id: u32,
     body: String,
     timestamp: String,
+}
+
+//CLAP Init
+#[derive(Parser)]
+#[command(name = "notes")]
+#[command(about = "CLI Note Application", long_about = None)]
+struct Cli {
+    #[command(subcommand)]
+    //if none, trigger interactive version (handled in main)
+    command: Option<Commands>,
+}
+
+//define commands
+#[derive(Subcommand)]
+enum Commands {
+    /// add note
+    Add {
+        note: String
+    },
+    /// remove note by id
+    Remove {
+        id: u32
+    },
+    /// view all notes
+    List,
 }
 
 fn add_note(notes: &mut Vec<Note>) -> io::Result<()> {
@@ -110,8 +137,57 @@ fn load_notes() -> Vec<Note> {
 }
 
 fn main() -> io::Result<()> {
-    print_banner();
+    // CLI arguments
+    let cli = Cli::parse();
+
     let mut notes: Vec<Note> = load_notes();
+
+    if let Some(cmd) = cli.command {
+        match cmd {
+            Commands::Add { note } => {
+                // copy add_note logic without loop
+                let now = Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
+                let new_note = Note {
+                    id: notes.len() as u32 + 1,
+                    body: note,
+                    timestamp: now,
+                };
+                notes.push(new_note);
+                save_notes(&notes);
+                println!("{}", "> Note added".green().bold());
+            }
+            Commands::Remove { id} => {
+                if id == 0 || id > notes.len() as u32 {
+                    eprintln!("{}", format!("Error: Note {} does not exist", id).red().bold());
+                } else {
+                    let index = (id - 1) as usize;
+                    notes.remove(index);
+
+                    //update indices
+                    for (i, note) in notes.iter_mut().enumerate() {
+                        note.id = (i+1) as u32;
+                    }
+                    save_notes(&notes);
+                    println!("{}", format!("> Removed Note {}", id).green().bold());
+                }
+            }
+            Commands::List => {
+                if notes.is_empty() {
+                    println!("{}", "No notes found".yellow().bold());
+                } else {
+                    println!("\n------NOTES------");
+                    for note in &notes {
+                        println!("{}. {} ({})", note.id, note.body, note.timestamp);
+                    }
+                    println!("-----------------\n");
+                }
+            }
+        }
+        return Ok(());
+    }
+
+    // --- Interactive Loop --- //
+    print_banner();
 
     loop {
         let options = vec![
