@@ -66,6 +66,7 @@ enum Commands {
     },
     /// view all notes
     List,
+    Path,
 }
 
 fn add_note(notes: &mut Vec<Note>) -> io::Result<()> {
@@ -204,6 +205,9 @@ fn main() -> io::Result<()> {
                     }
                     println!("-----------------\n");
                 }
+            }
+            Commands::Path => {
+                println!("{}", get_database_path().display());
             }
         }
         return Ok(());
