@@ -1,5 +1,4 @@
-# checklist
-A simple to-do list to help me learn Rust.
+# NotesCLI
 
 <img width="343" height="186" alt="Screenshot 2026-01-01 at 15 12 51" src="https://github.com/user-attachments/assets/bf54fd04-303a-4223-9a80-da11f89388a1" />
 
@@ -12,7 +11,7 @@ You need to have **Rust** and **Cargo** installed on your machine. You can insta
 You can install this tool directly from GitHub using Cargo. 
 
 ```bash
-cargo install --git https://github.com/cringey303/checklist
+cargo install --git https://github.com/cringey303/notes
 ```
 After installing, run
 ```bash
@@ -34,8 +33,8 @@ Next steps:
 ### Installation & Usage
 1. **Clone the repository** (or download the files):
    ```bash
-   git clone https://github.com/cringey303/checklist
-   cd checklist
+   git clone https://github.com/cringey303/notes
+   cd notes
 2. **Run the program**
    ```bash
    cargo run
