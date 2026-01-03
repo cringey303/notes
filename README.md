@@ -28,7 +28,7 @@ Next steps:
 - Add note edit/search functionality
 - Add CLAP (command line argument parser) functionality for quick commands
 
-## OR Running from source
+## OR Building from source
 
 ### Installation & Usage
 1. **Clone the repository** (or download the files):
